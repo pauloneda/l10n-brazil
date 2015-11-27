@@ -33,6 +33,9 @@ With Brazilian Taxes
 
 You can define price lists in analytic account, make some theoretical revenue
 reports.""",
+    'author': 'KMEE, Odoo Community Association (OCA)',
+    'website': 'http://odoo-brasil.org',
+    'version': '8.0.0.0.0',
     'author': 'KMEE',
     'website': 'http://www.kmee.com.br',
     'depends': ['l10n_br_account',
