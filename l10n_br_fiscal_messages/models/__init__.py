@@ -19,7 +19,7 @@
 #
 ###############################################################################
 
-# from . import account_invoice
+from . import account_invoice
 from . import account_fiscal_position
 from . import invoice_message
 from . import l10n_br_account_fiscal_category

@@ -76,10 +76,10 @@ class AccountInvoice(models.Model):
                     if message not in messages_list:
                         messages_list.append(message)
 
-                    if inv.comment:
-                        inv.comment += ' - ' + ' - '.join(messages_list)
-                    else:
-                        inv.comment = ' - '.join(messages_list)
+                if inv.comment:
+                    inv.comment += ' - ' + ' - '.join(messages_list)
+                else:
+                    inv.comment = ' - '.join(messages_list)
 
             # nfe_obj = NFe310()
             nfes = nfe_obj.get_xml(self.env.cr, self.env.uid, self.ids,
