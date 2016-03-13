@@ -89,6 +89,13 @@ class AccountInvoice(models.Model):
             self.icms_st_base += line.icms_st_base
             self.icms_st_value += line.icms_st_value
 
+    @api.depends('invoice_line.gnre_value')
+    def _compute_gnre_total(self):
+        for record in self:
+            record.gnre_total = 0.0
+            for line in record.invoice_line:
+                record.gnre_total += line.gnre_value
+
     @api.model
     @api.returns('l10n_br_account.fiscal_category')
     def _default_fiscal_category(self):
@@ -354,6 +361,9 @@ class AccountInvoice(models.Model):
         store=True,
         digits=dp.get_precision('Account'),
         compute='_compute_amount')
+    gnre_total = fields.Float(
+        string="Vlr. GNRE", compute="_compute_gnre_total",
+        store=True)
 
     # TODO não foi migrado por causa do bug github.com/odoo/odoo/issues/1711
     def fields_view_get(self, cr, uid, view_id=None, view_type=False,
@@ -713,6 +723,9 @@ class AccountInvoiceLine(models.Model):
     freight_value = fields.Float(
         'Frete', digits=dp.get_precision('Account'), default=0.00)
     fiscal_comment = fields.Text(u'Observação Fiscal')
+    gnre_value = fields.Float(
+        string='Valor GNRE', required=True, digits=dp.get_precision('Account'),
+        default=0.00)
 
     def _amount_tax_icms(self, tax=None):
         result = {
@@ -915,6 +928,7 @@ class AccountInvoiceLine(models.Model):
             other_costs_value=other_costs_value)
 
         result['total_taxes'] = taxes_calculed['total_taxes']
+        result['gnre_value'] = taxes_calculed['gnre_value']
 
         for tax in taxes_calculed['taxes']:
             try:
