@@ -41,6 +41,7 @@ class AccountFiscalPositionTaxTemplate(models.Model):
         'account.product.fiscal.classification.template', 'NCM')
     origin = fields.Selection(PRODUCT_ORIGIN, 'Origem',)
 
+
 class AccountFiscalPosition(models.Model):
     _inherit = 'account.fiscal.position'
 
@@ -150,7 +151,7 @@ class AccountFiscalPosition(models.Model):
                             map_taxes_origin |= map
                         if (map.fiscal_classification_id.id ==
                                 product.fiscal_classification_id.id and
-                                    map.origin == product.origin):
+                                map.origin == product.origin):
                             map_taxes_origin_ncm |= map
                         else:
                             map_taxes |= map

@@ -193,30 +193,32 @@ class AccountTax(models.Model):
             # devem passar por este trecho
             if fiscal_position and fiscal_position.cfop_id.id_dest == '2':
                 specific_icms_inter = [tx for tx in result['taxes']
-                                 if tx['domain'] == 'icmsinter']
+                                       if tx['domain'] == 'icmsinter']
                 try:
-                # Devido as operações com redução de base devemos verificar os
-                # totais da operação
-                    if (specific_icms_inter[0]['amount'] == \
+                    # Devido as operações com redução de base devemos
+                    # verificar os totais da operação
+                    if (specific_icms_inter[0]['amount'] ==
                             specific_icms[0]['amount']):
                         pass
                     elif (specific_icms_inter[0]['amount'] <
-                              specific_icms[0]['amount']):
+                          specific_icms[0]['amount']):
                         aux = specific_icms_inter[0]
                         specific_icms_inter[0] = specific_icms[0]['amount']
                         specific_icms[0]['amount'] = aux
                     else:
                         # BASE UNICA
                         difa['vBCUFDest'] = total_base
-                        #ICMS origem = [BC x ALQ INTER]
+                        # ICMS origem = [BC x ALQ INTER]
                         difa['pICMSUFDest'] = specific_icms_inter[0]['percent']
-                        #TODO mapear percentual com l10n_br_tax.icms_partition
+                        # TODO mapear percentual com l10n_br_tax.icms_partition
                         difa['pICMSInterPart'] = 0.40
-                        #ICMS interno Destino = [BC x ALQ intra]
+                        # ICMS interno Destino = [BC x ALQ intra]
                         difa['pICMSInter'] = specific_icms[0]['percent']
-                        #ICMS destino = [BC x ALQ intra] - ICMS origem
-                        icms_difa = ((difa['vBCUFDest'] * difa['pICMSUFDest'])-
-                                     (difa['vBCUFDest'] * difa['pICMSInter']))
+                        # ICMS destino = [BC x ALQ intra] - ICMS origem
+                        icms_difa = (
+                            (difa['vBCUFDest'] * difa['pICMSUFDest']) -
+                            (difa['vBCUFDest'] * difa['pICMSInter'])
+                        )
                         if result_fcp['taxes']:
                             # % Fundo pobreza
                             difa['pFCPUFDest'] = \
@@ -231,7 +233,7 @@ class AccountTax(models.Model):
                             icms_difa * (1-difa['pICMSInterPart'])
                         specific_icms_inter[0]['percent'] = \
                             difa['pICMSUFDest'] - difa['pICMSInter']
-                        #FIXME: Criar um lancaçamento para cada % rateado
+                        # FIXME: Criar um lancaçamento para cada % rateado
                         specific_icms_inter[0]['amount'] = icms_difa
                         result_icms_inter = self._compute_tax(
                             cr,
@@ -244,11 +246,10 @@ class AccountTax(models.Model):
                             base_tax)
                         totaldc += result_icms_inter['tax_discount']
                         calculed_taxes += result_icms_inter['taxes']
-
                 except:
-                    raise UserError(u'Tributação do ICMS para a UF de destino',
-                              u'Configurada incorretamente')
-
+                    raise UserError(
+                        u'Tributação do ICMS para a UF de destino',
+                        u'Configurada incorretamente')
         else:
             total_base = result['total'] + insurance_value + \
                 freight_value + other_costs_value

@@ -58,7 +58,8 @@ class AccountInvoice(models.Model):
         self.ii_value = sum(line.ii_value for line in self.invoice_line)
         self.vFCPUFDest = sum(line.vFCPUFDest for line in self.invoice_line)
         self.vICMSUFDest = sum(line.vICMSUFDest for line in self.invoice_line)
-        self.vICMSUFRemet = sum(line.vICMSUFRemet for line in self.invoice_line)
+        self.vICMSUFRemet = sum(
+            line.vICMSUFRemet for line in self.invoice_line)
         self.amount_discount = sum(
             line.discount_value for line in self.invoice_line)
         self.amount_insurance = sum(
