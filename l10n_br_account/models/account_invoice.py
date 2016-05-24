@@ -126,6 +126,22 @@ class AccountInvoice(models.Model):
     _order = 'internal_number desc'
 
     @api.one
+    @api.constrains('fiscal_category_id', 'jornal_id', 'invoice_line')
+    def _check_fiscal_category_journal(self):
+        if (self.fiscal_category_id and
+            self.fiscal_category_id.journal_id != self.journal_id):
+            raise UserError(
+                        u'Não é possível registrar documentos fiscais com '
+                        u'categorias fiscais que tenham '
+                        u'diários diferentes do da fatura.')
+        for item in self.invoice_line:
+            if item.fiscal_category_id.journal_id != self.journal_id:
+                raise UserError(
+                    u'Não é possível registrar documentos fiscais com '
+                    u'produtos com categorias fiscais que tenham '
+                    u'diários diferentes do da fatura.')
+
+    @api.one
     @api.constrains('number')
     def _check_invoice_number(self):
         domain = []
