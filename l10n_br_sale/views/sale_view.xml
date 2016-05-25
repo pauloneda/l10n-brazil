@@ -12,7 +12,7 @@
 					<field name="em_atraso" invisible="1" />
 				</tree>
 				<tree position="attributes">
-                    <attribute name="colors">#27ae60:tipo_pagamento=='Pagamento Antecipado';#e74c3c:em_atraso==True</attribute>
+                    <attribute name="colors">grey:state=='cancel'; blue:state in ('waiting_date','manual');red:state in ('invoice_except','shipping_except'); #27ae60:tipo_pagamento=='Pagamento Antecipado';#e74c3c:em_atraso==True</attribute>
                 </tree>
             </field>
         </record>
