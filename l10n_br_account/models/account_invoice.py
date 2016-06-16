@@ -346,25 +346,27 @@ class AccountInvoice(models.Model):
                 and object.journal_id.conciliation_journal):
                 voucher_obj = self.env['account.voucher']
                 context = {}
-                context.update({
-                    'invoice_id': object.id,
-                    'invoice_type': object.type,
-                    'type': object.type in (
-                        'out_invoice', 'out_refund')
-                            and 'receipt' or 'payment',
-                    'payment_expected_currency': object.currency_id.id,
-                    'default_partner_id': self.env['res.partner'].
-                        _find_accounting_partner(object.partner_id).id,
-                    'default_amount': object.type in (
-                    'out_refund', 'in_refund') and -object.residual
-                                      or object.residual,
-                    'default_reference': object.name,
-                    'default_type': object.type in (
-                        'out_invoice', 'out_refund')
-                                    and 'receipt' or 'payment',
-                    'default_journal_id':
-                        object.journal_id.conciliation_journal.id
-                })
+                context.update(
+                    {
+                        'invoice_id': object.id,
+                        'invoice_type': object.type,
+                        'type': object.type in (
+                            'out_invoice',
+                            'out_refund') and 'receipt' or 'payment',
+                        'payment_expected_currency': object.currency_id.id,
+                        'default_partner_id': self.env['res.partner'].
+                            _find_accounting_partner(object.partner_id).id,
+                        'default_amount': object.type in (
+                            'out_refund',
+                            'in_refund')
+                            and -object.residual or object.residual,
+                        'default_reference': object.name,
+                        'default_type': object.type in (
+                            'out_invoice',
+                            'out_refund') and 'receipt' or 'payment',
+                        'default_journal_id':
+                            object.journal_id.conciliation_journal.id
+                    })
                 default_keys = [vdk for vdk in voucher_obj._defaults.keys()]
                 vals = voucher_obj.with_context(
                     context).default_get(default_keys)
